@@ -30,6 +30,7 @@
 #include "lcd/lcd_common.h"
 
 #if defined(ARDUINO) && !defined(ENERGIA)
+#include "pins_arduino.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 //                        ARDUINO I2C IMPLEMENTATION
@@ -123,15 +124,49 @@ void ssd1306_platform_i2cInit(int8_t busId, uint8_t addr, ssd1306_platform_i2cCo
 #elif WIRE_INTERFACES_COUNT < 2
         s_i2c = &Wire;
 #elif WIRE_INTERFACES_COUNT < 3
-        if ( busId == 0 )
-        {
-            s_i2c = &Wire;
-        }
-        else
+        if ( busId == 1 )
         {
             s_i2c = &Wire1;
         }
+        else // busId is 0 or -1
+        {
+            s_i2c = &Wire;
+        }
+#elif WIRE_INTERFACES_COUNT < 4
+        if ( busId == 2 )
+        {
+            s_i2c = &Wire2;
+        }
+        else if ( busId == 1 )
+        {
+            s_i2c = &Wire1;
+        }
+        else // busId is 0 or -1
+        {
+            s_i2c = &Wire;
+        }
+#else
+        if ( busId == 3 )
+        {
+            s_i2c = &Wire3;
+        }
+        else if ( busId == 2 )
+        {
+            s_i2c = &Wire2;
+        }
+        else if ( busId == 1 )
+        {
+            s_i2c = &Wire1;
+        }
+        else // busId is 0 or -1
+        {
+            s_i2c = &Wire;
+        }
 #endif
+        if ( s_i2c == NULL ) // busId is -1 or unsupported value
+        {
+            s_i2c = &Wire;
+        }
         s_i2c->begin();
     }
     #ifdef SSD1306_WIRE_CLOCK_CONFIGURABLE
