@@ -40,7 +40,9 @@
 
 #include <Wire.h>
 #if defined( WIRE_INTERFACES_COUNT ) && WIRE_INTERFACES_COUNT > 1
+#if !defined __has_include || __has_include(<Wire1.h>)
 #include <Wire1.h>
+#endif
 #endif
 
 static uint8_t s_bytesWritten = 0;
